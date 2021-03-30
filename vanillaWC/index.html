@@ -1,0 +1,47 @@
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+
+    <title>wc-test</title>
+
+    <script type="module">
+        import ChessBoard from "./chess-board.js";
+
+        customElements.define('chess-board', ChessBoard)
+    </script>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const board = document.getElementsByTagName('chess-board')[0]
+            const highlighted = new Set()
+
+            board.addEventListener('square-click', ({detail: {algebraic}}) => {
+                if (highlighted.has(algebraic)) {
+                    board.resetHighlight(algebraic)
+                    highlighted.delete(algebraic)
+                } else {
+                    board.highlight(algebraic, 'green')
+                    highlighted.add(algebraic)
+                }
+            })
+
+            board.addEventListener('move', e => {
+                console.log('move', e.detail);
+                board.move(e.detail.from.algebraic, e.detail.to.algebraic)
+            })
+
+            board.addEventListener('point', e => {
+                console.log('point', e.detail);
+            })
+        })
+    </script>
+
+</head>
+
+<body>
+<chess-board fen="rnbqkbnr/pp1ppppp/8/2p5/4P3/5N2/PPPP1PPP/RNBQKB1R b KQkq - 1 2"/>
+</body>
+
+
+</html>
+
