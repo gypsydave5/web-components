@@ -1,6 +1,6 @@
 <script lang="ts">
     import Square from './Square.svelte'
-    import {squares} from "./Chess";
+    import {squares} from "./Chess"
 
     export let dark = '#666'
     export let light = '#ddd'

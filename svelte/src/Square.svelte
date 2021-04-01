@@ -1,5 +1,5 @@
 <script lang="ts">
-    import {Rank, File} from "./Chess";
+    import type {Rank, File} from "./Chess";
 
     enum Colour {
         Light = 'light',
@@ -19,7 +19,7 @@
 
 </script>
 
-<div class={squareColour(rank,file)} style="--dark: {dark} --light: {light}">
+<div class={squareColour(rank,file)} style="--dark: {dark}; --light: {light}">
     {file}{rank}
 </div>
 
