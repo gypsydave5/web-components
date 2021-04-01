@@ -1,0 +1,10 @@
+const { config } = require("@swc/core/spack");
+
+module.exports = config({
+  entry: {
+    web: __dirname + "/src/chess-board.ts",
+  },
+  output: {
+    path: __dirname + "/out",
+  },
+});

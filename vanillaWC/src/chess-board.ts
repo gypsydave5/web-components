@@ -1,25 +1,30 @@
+import ChessSquare, {ChessPiece} from "./chess-square";
+
 const squareClickEventName = 'square-click';
 const moveEventName = 'move';
 const chessPieceMimeType = 'text/chess-piece';
 
-const iToFile = (n) => String.fromCharCode(97 + n)
-const iToRank = (n) => String(n + 1)
-const isDark = (rank, file) => {
+const iToFile = (n: number) => String.fromCharCode(97 + n)
+const iToRank = (n: number) => String(n + 1)
+const isDark = (rank: string, file: string) => {
     const f = file.charCodeAt(0) - 97
     const r = rank.charCodeAt(0) - 49
     return (f + r) % 2 === 0
 }
 
-class FEN {
-    constructor(fen) {
-        this.fen = fen
-        if (this.fen) {
+class Board {
+    private position: any;
+    private rawRows: any;
+    private board: any;
+
+    constructor(private readonly fen?: string) {
+        if (fen) {
             this.position = fen.split(' ')[0]
             this.rawRows = this.position.split('/')
 
-            this.board = this.rawRows.flatMap((rr, i) => {
+            this.board = this.rawRows.flatMap((rr: string, i: number) => {
                 const rank = iToRank(Math.abs(i - 7))
-                return rr.split('').flatMap((c) => {
+                return rr.split('').flatMap((c: string) => {
                     const parsed = parseInt(c, 10)
                     if (isNaN(parsed)) {
                         return [c]
@@ -38,16 +43,20 @@ class FEN {
     }
 }
 
-import ChessSquare from "./chess-square.js"
 
 export default class ChessBoard extends HTMLElement {
+    moveSquare: string | null
+    boardElement: HTMLDivElement
+    private squares: Map<string, ChessSquare> = new Map()
+    private board: Board | undefined
+
     constructor() {
         super()
         this.moveSquare = null
         this.attachShadow({mode: 'open'})
 
         const board = document.createElement('div')
-        this.board = board
+        this.boardElement = board
         board.className = 'chessBoard'
 
 
@@ -66,31 +75,35 @@ export default class ChessBoard extends HTMLElement {
 `
 
         window.customElements.define('chess-square', ChessSquare)
-        this.shadowRoot.append(board, style)
+        window.customElements.define('chess-piece', ChessPiece)
+        this.shadowRoot?.append(board, style)
     }
 
-    highlight(square, color) {
+    highlight(square: string, color: string) {
         const s = this.squares.get(square)
-        s.highlight(color)
+        s?.highlight(color)
     }
 
-    resetHighlight(square) {
+    resetHighlight(square: string) {
         const s = this.squares.get(square)
-        s.resetHighlight()
+        s?.resetHighlight()
     }
 
-    move(from, to) {
+    move(from: string, to: string) {
         const f = this.squares.get(from)
         const t = this.squares.get(to)
-        const piece = f.removePiece()
-        t.setPiece(piece)
+        const piece = f?.removePiece()
+        if (piece) {
+            t?.setPiece(piece)
+        }
     }
 
     connectedCallback() {
-        this.fen = new FEN(this.getAttribute('fen'))
+        const fen = this.getAttribute('fen');
+        this.board = fen ? new Board(fen): new Board()
         this.squares = new Map()
-        for (let {rank, file, piece} of this.fen) {
-            const square = document.createElement('chess-square')
+        for (let {rank, file, piece} of this.board) {
+            const square = new ChessSquare()
             const dark = '#666';
             const light = '#DDD';
 
@@ -102,21 +115,21 @@ export default class ChessBoard extends HTMLElement {
                 square.setAttribute('piece', piece)
             }
 
-            this.squares.set(file+rank,square)
-            this.board.appendChild(square)
+            this.squares.set(file + rank, square)
+            this.boardElement.appendChild(square)
         }
 
-        this.shadowRoot.addEventListener(squareClickEventName, (e) => {
+        this.shadowRoot?.addEventListener(squareClickEventName, (e) => {
             const customEvent = new CustomEvent(squareClickEventName, e)
             this.dispatchEvent(customEvent);
         })
 
-        this.shadowRoot.addEventListener(moveEventName, (e) => {
+        this.shadowRoot?.addEventListener(moveEventName, (e) => {
             const customEvent = new CustomEvent(moveEventName, e)
             this.dispatchEvent(customEvent);
         })
 
-        this.shadowRoot.addEventListener('point', (e) => {
+        this.shadowRoot?.addEventListener('point', (e) => {
             const customEvent = new CustomEvent('point', e)
             this.dispatchEvent(customEvent);
         })
