@@ -14,6 +14,17 @@
 </head>
 
 <body>
-	<my-element name="DAVE!"/>
+	<!--firefox hates empty tags... -->
+	<my-element name="DAVE!"></my-element>
+	<button>DO IT</button>
+	<p>THIS IS A PARAGRAPH</p>
 </body>
+
+<script>
+	const c = document.getElementsByTagName('my-element')[0]
+	const button = document.getElementsByTagName('button')[0]
+	button.addEventListener('click', (e) => {
+		c.hellos = [...c.hellos, 'hi'] // needs a new object reference to force the change
+	})
+</script>
 </html>
