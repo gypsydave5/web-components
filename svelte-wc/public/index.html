@@ -23,8 +23,12 @@
 <script>
 	const c = document.getElementsByTagName('my-element')[0]
 	const button = document.getElementsByTagName('button')[0]
-	button.addEventListener('click', (e) => {
+	button.addEventListener('click', () => {
 		c.hellos = [...c.hellos, 'hi'] // needs a new object reference to force the change
+	})
+
+	c.addEventListener('boo', (e) => {
+		console.log(e)
 	})
 </script>
 </html>
