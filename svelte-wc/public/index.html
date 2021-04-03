@@ -10,25 +10,24 @@
 	<link rel='stylesheet' href='/global.css'>
 	<link rel='stylesheet' href='/build/bundle.css'>
 
-	<script defer src='/build/bundle.js'></script>
+	<script defer src='/build/bundle.js'>
+	</script>
 </head>
 
 <body>
 	<!--firefox hates empty tags... -->
-	<my-element name="DAVE!"></my-element>
 	<button>DO IT</button>
 	<p>THIS IS A PARAGRAPH</p>
+	<div id="app"></div>
 </body>
 
 <script>
-	const c = document.getElementsByTagName('my-element')[0]
 	const button = document.getElementsByTagName('button')[0]
 	button.addEventListener('click', () => {
-		c.hellos = [...c.hellos, 'hi'] // needs a new object reference to force the change
+		app.hellos =  [...app.hellos, 'hi'] // needs a new object reference to force the change
 	})
-
-	c.addEventListener('boo', (e) => {
-		console.log(e)
-	})
+	document.addEventListener("DOMContentLoaded", function(event) {
+		app.$on('boo', e => console.log(e))
+	});
 </script>
 </html>

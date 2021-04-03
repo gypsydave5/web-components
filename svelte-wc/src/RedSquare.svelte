@@ -1,4 +1,4 @@
-<svelte:options tag={"red-square"} />
+<svelte:options />
 
 <script>
     export let colour = '#F77'
